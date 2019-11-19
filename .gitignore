@@ -1,0 +1,2 @@
+# ignore any tempory MATLAB files that are opened during file editing
+*~
