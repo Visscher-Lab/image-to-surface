@@ -17,30 +17,63 @@ Date Created: 11/19/19
 vertIm = zeros(length(ecc),1);
 areaInd = find(varea == area_val);
 tmp = [];
-parfor ii = 1:length(areaInd)
-    loop_ind = areaInd(ii);
-    % first step, find the index with the closest polar angle +
-    % eccentricity match to our current vertex
-    
-    % distance formula for polar coordinates is sqrt(r1^2 + r2^2 +
-    % 2*r1*r2*cos(th2 - th1)), calculate for every index in im_ecc and
-    % im_pol, find index with min dist
-    d = sqrt(ecc(loop_ind)^2 + im_ecc.^2 - 2*ecc(loop_ind)*im_ecc.*cosd(pol(loop_ind)-im_pol));
-    
-    % find the index with the minimum distance. this will be the center
-    % index for our gaussian
-    [indx, indy] = find(d == min(d(:)));
-    
-    % calculate gaussian weight matrix with center at
-    % [im_x(indx,indy),im_y(indx,indy)]. both sigx and sigy are equal
-    % to sigma at that vertex
-    numerator = (im_x-im_x(indx,indy)).^2 + (im_y-im_y(indx,indy)).^2;
-    denominator = 2*sigma(loop_ind)^2;
-    gauss = exp(-numerator/denominator);
-    
-    % divide overlapped area of gaussian by area under full gaussian
-    weightedIm = im.*gauss;
-    tmp(ii) = sum(weightedIm(:))/sum(gauss(:));
+
+% get current parpool
+p = gcp('nocreate');
+
+% if parpool exists, do parfor loop
+if ~isempty(p)
+    parfor ii = 1:length(areaInd)
+        loop_ind = areaInd(ii);
+        % first step, find the index with the closest polar angle +
+        % eccentricity match to our current vertex
+        
+        % distance formula for polar coordinates is sqrt(r1^2 + r2^2 +
+        % 2*r1*r2*cos(th2 - th1)), calculate for every index in im_ecc and
+        % im_pol, find index with min dist
+        d = sqrt(ecc(loop_ind)^2 + im_ecc.^2 - 2*ecc(loop_ind)*im_ecc.*cosd(pol(loop_ind)-im_pol));
+        
+        % find the index with the minimum distance. this will be the center
+        % index for our gaussian
+        [indx, indy] = find(d == min(d(:)));
+        
+        % calculate gaussian weight matrix with center at
+        % [im_x(indx,indy),im_y(indx,indy)]. both sigx and sigy are equal
+        % to sigma at that vertex
+        numerator = (im_x-im_x(indx,indy)).^2 + (im_y-im_y(indx,indy)).^2;
+        denominator = 2*sigma(loop_ind)^2;
+        gauss = exp(-numerator/denominator);
+        
+        % divide overlapped area of gaussian by area under full gaussian
+        weightedIm = im.*gauss;
+        tmp(ii) = sum(weightedIm(:))/sum(gauss(:));
+    end
+else
+    for ii = 1:length(areaInd)
+        loop_ind = areaInd(ii);
+        % first step, find the index with the closest polar angle +
+        % eccentricity match to our current vertex
+        
+        % distance formula for polar coordinates is sqrt(r1^2 + r2^2 +
+        % 2*r1*r2*cos(th2 - th1)), calculate for every index in im_ecc and
+        % im_pol, find index with min dist
+        d = sqrt(ecc(loop_ind)^2 + im_ecc.^2 - 2*ecc(loop_ind)*im_ecc.*cosd(pol(loop_ind)-im_pol));
+        
+        % find the index with the minimum distance. this will be the center
+        % index for our gaussian
+        [indx, indy] = find(d == min(d(:)));
+        
+        % calculate gaussian weight matrix with center at
+        % [im_x(indx,indy),im_y(indx,indy)]. both sigx and sigy are equal
+        % to sigma at that vertex
+        numerator = (im_x-im_x(indx,indy)).^2 + (im_y-im_y(indx,indy)).^2;
+        denominator = 2*sigma(loop_ind)^2;
+        gauss = exp(-numerator/denominator);
+        
+        % divide overlapped area of gaussian by area under full gaussian
+        weightedIm = im.*gauss;
+        tmp(ii) = sum(weightedIm(:))/sum(gauss(:));
+    end
 end
 
 vertIm(areaInd) = tmp;
