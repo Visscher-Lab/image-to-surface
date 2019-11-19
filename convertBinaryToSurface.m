@@ -192,6 +192,6 @@ if ~exist(full_outdir,'dir')
     mkdir(full_outdir)
 end
 
-%write_label(lhlabel(:,1),lhlabel(:,2:4),lhlabel(:,5),fullfile(full_outdir,['lh.V1.' labelbase '.label']), subj)
+write_label(lhlabel(:,1),lhlabel(:,2:4),lhlabel(:,5),fullfile(full_outdir,['lh.V1.' labelbase '.label']), subj)
 write_label(rhlabel(:,1),rhlabel(:,2:4),rhlabel(:,5),fullfile(full_outdir,['rh.V1.' labelbase '.label']), subj)
 
