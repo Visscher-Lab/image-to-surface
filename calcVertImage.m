@@ -7,6 +7,9 @@ value at that vertex centered at the ecc and pol values for that vertex. It
 will then multiply this weight matrix by the given image, average across
 the resultant weighted image, and store this mean in an indexed location
 for later.
+
+Written by: Matt Defenderfer
+Date Created: 11/19/19
 %}
 
 
