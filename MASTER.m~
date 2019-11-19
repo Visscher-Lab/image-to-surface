@@ -1,0 +1,11 @@
+fov_path = '/data/user/mdefende/Im2Surf/center_fov.bmp';
+im2plot_path = '/data/user/mdefende/Im2Surf/bar_stim.bmp';
+subdir = '/data/project/vislab/a/MDP/FreeSurfer_Subjects/';
+subj = 'MDP050';
+region = 'V1';
+labelbase = 'bar_overlap';
+outdir = 'MKD_labels';
+max_ecc = [;
+dpp = [];
+
+convertBinaryToSurface(fov_path,im2plot_path,subdir,subj,region,labelbase,outdir,max_ecc,dpp)
