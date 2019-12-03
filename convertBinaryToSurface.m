@@ -196,6 +196,12 @@ lhlabel = [lhcortex(ismember(lhcortex(:,1),lhvert),1:4),lhIm(lhvert+1)];
 rhvert  = find(rharea == area_val) - 1;
 rhlabel = [rhcortex(ismember(rhcortex(:,1),rhvert),1:4),rhIm(rhvert+1)];
 
+%% If binarizing, remove vertices with 0 in column 5
+if binary
+    lhlabel(lhlabel(:,5) == 0,:) = [];
+    rhlabel(rhlabel(:,5) == 0,:) = [];
+end
+
 %% Save to file
 if ~isempty(outdir)
     full_outdir = fullfile(subdir,subj,'label',outdir);
