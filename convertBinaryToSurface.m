@@ -1,4 +1,4 @@
-function convertBinaryToSurface(fov_path,im2plot_path,subdir,subj,region,labelbase,outdir,max_ecc,dpp)
+function convertBinaryToSurface(fov_path,im2plot_path,subdir,subj,region,labelbase,outdir,max_ecc,dpp,binary)
 %{
 This function takes in images of foveal location and some shape with
 position relative to the fovea and converts them to surface space on the
@@ -18,6 +18,11 @@ instructions). The function has the following workflow:
         d. assign the resulting percentage to that vertex location in an array
     3. A label is created for the left and right hemispheres containing all
        vertices in the selected area with their assigned percentage values
+
+Standard output are two labels files containing each vertex in the region
+passed in to the function. Each of the vertices will have a value assigned
+to it between 0 and 1. This represents the weighted overlap of the object
+in the image with the gaussian that represents the pRF. 
 
 Inputs: 
     fov_path <string>: file path to the image showing the fovea location
@@ -47,7 +52,7 @@ Inputs:
         By default, this value will is 50 degrees, but a decent rule of
         thumb would be to set this value to be ~20% higher than the maximum
         radial eccentricity of the area of interest in your image. Leave []
-        to use default 50.
+        to use default 60.
     dpp <double>: conversion factor between pixels and degrees. dpp stands
         for degrees per pixel. This is used to convert from an image space
         to a retinotopic space. By default, this value is 0.0356
@@ -56,9 +61,15 @@ Inputs:
         absolutely must be set, otherwise the retinotopic estimates will be
         shrunk or extended compared to expected. Leave [] to use default
         0.0356. 
+    binary <logical>: if true, the algorithm will create a label with
+        only vertices whose centers are within the extent of the object in
+        the image to plot (scotoma, stimulus, etc.). If false, the
+        algorithm will calculate the % association metric described above.
+        Leave [] to use defaults value of false.
 
 Written by: Matt Defenderfer
 Date: 11/19/19
+Updated: 12/3/19
 %}
 %% Initial Setup
 
@@ -67,7 +78,11 @@ if isempty(dpp)
 end
 
 if isempty(max_ecc)
-    max_ecc = 50;
+    max_ecc = 60;
+end
+
+if isempty(binary)
+    binary = false;
 end
 
 % Set the SUBJECTS_DIR env variable
@@ -171,8 +186,8 @@ rhpol(indless) = rhpol(indless) + 90;
 rhpol(indmore) = rhpol(indmore) - 270;    
 
 %% Convert Image to surface space for multiple areas
-lhIm = calcVertImage(im2plot,im_ecc,im_pol,x_dist,y_dist,lhecc,lhpol,lhsig,lharea,area_val);
-rhIm = calcVertImage(im2plot,im_ecc,im_pol,x_dist,y_dist,rhecc,rhpol,rhsig,rharea,area_val);
+lhIm = calcVertImage(im2plot,im_ecc,im_pol,x_dist,y_dist,lhecc,lhpol,lhsig,lharea,area_val,binary);
+rhIm = calcVertImage(im2plot,im_ecc,im_pol,x_dist,y_dist,rhecc,rhpol,rhsig,rharea,area_val,binary);
 
 %% convert to label
 lhvert  = find(lharea == area_val) - 1;
