@@ -16,16 +16,16 @@ While the toolbox itself does not call any neuropythy commands, the neuropythy t
 # Instructions #################################################################
 The toolbox is run through the convertBinaryToSurface function. calcVertImage is a helper function called in convertBinaryToSurface. The function needs the following inputs:
 
-    - fov_path <string>: file path to the image showing the fovea location. ex. '/data/user/mdefende/Im2Surf/MDP050_OD_OS_fovea.bmp'
-    - im2plot_path <string>: file path to the image to be converted to surface space. ex. '/data/user/mdefende/Im2Surf/MDP050_OD_OS_lpx.bmp';
-    - subdir <string>: file path containing the subject's freesurfer output. ex. '/data/project/vislab/a/MDP/FreeSurfer_Subjects/';
-    - subj <string>: name of the subject in subdir. ex. 'MDP050'
-    - region <string>: which region to convert the image to. Possible values are 'V1','V2', and 'V3' for now.
-    - outdir <string>: subfolder in the subject's freesurfer label folder to save the output labels. Leave [] to store in the main label folder. The folder will be made if it does not already exist. ex. for input 'MKD_labels', labels will be stored in subdir/subj/label/MKD_labels
-    - labelbase <string>: label names will be saved as ?h.<region>.<labelbase>.label
-    - max_ecc <double>: radial eccentricity to pad the image to. This works around the issue that most inputs from MAIA images or likewise will only have a radial eccentricity of ~20 degrees. Leaving images this size would cause centers for far field vertices to be estimated as much closer than they are in reality which, based on the size of the scotoma, stimulus, or otherwise, could cause a measureable overlap in the farfield vertices when there actually shouldn't be. By default, this value will is 50 degrees, but a decent rule of thumb would be to set this value to be ~20% higher than the maximum radial eccentricity of the area of interest in your image. Leave [] to use default 60.
-    - dpp <double>: conversion factor between pixels and degrees. dpp stands for degrees per pixel. This is used to convert from an image space to a retinotopic space. By default, this value is 0.0356 corresponding to the dpp for the current MAIA in Callahan 405. If using images derived from sources other than this MAIA, this value absolutely must be set, otherwise the retinotopic estimates will be shrunk or extended compared to expected. Leave [] to use default 0.0356. 
-    - binary <logical>: if true, the algorithm will create a label with only vertices whose centers are within the extent of the object in the image to plot (scotoma, stimulus, etc.). If false, the algorithm will calculate the % association metric described above. Leave [] to use defaults value of false.
+- fov_path <string>: file path to the image showing the fovea location. ex. '/data/user/mdefende/Im2Surf/MDP050_OD_OS_fovea.bmp'
+- im2plot_path <string>: file path to the image to be converted to surface space. ex. '/data/user/mdefende/Im2Surf/MDP050_OD_OS_lpx.bmp';
+- subdir <string>: file path containing the subject's freesurfer output. ex. '/data/project/vislab/a/MDP/FreeSurfer_Subjects/';
+- subj <string>: name of the subject in subdir. ex. 'MDP050'
+- region <string>: which region to convert the image to. Possible values are 'V1','V2', and 'V3' for now.
+- outdir <string>: subfolder in the subject's freesurfer label folder to save the output labels. Leave [] to store in the main label folder. The folder will be made if it does not already exist. ex. for input 'MKD_labels', labels will be stored in subdir/subj/label/MKD_labels
+- labelbase <string>: label names will be saved as ?h.<region>.<labelbase>.label
+- max_ecc <double>: radial eccentricity to pad the image to. This works around the issue that most inputs from MAIA images or likewise will only have a radial eccentricity of ~20 degrees. Leaving images this size would cause centers for far field vertices to be estimated as much closer than they are in reality which, based on the size of the scotoma, stimulus, or otherwise, could cause a measureable overlap in the farfield vertices when there actually shouldn't be. By default, this value will is 50 degrees, but a decent rule of thumb would be to set this value to be ~20% higher than the maximum radial eccentricity of the area of interest in your image. Leave [] to use default 60.
+- dpp <double>: conversion factor between pixels and degrees. dpp stands for degrees per pixel. This is used to convert from an image space to a retinotopic space. By default, this value is 0.0356 corresponding to the dpp for the current MAIA in Callahan 405. If using images derived from sources other than this MAIA, this value absolutely must be set, otherwise the retinotopic estimates will be shrunk or extended compared to expected. Leave [] to use default 0.0356. 
+- binary <logical>: if true, the algorithm will create a label with only vertices whose centers are within the extent of the object in the image to plot (scotoma, stimulus, etc.). If false, the algorithm will calculate the % association metric described above. Leave [] to use defaults value of false.
         
 An example can be seen in the MASTER.m script. 
 
