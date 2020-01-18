@@ -190,11 +190,11 @@ lhIm = calcVertImage(im2plot,im_ecc,im_pol,x_dist,y_dist,lhecc,lhpol,lhsig,lhare
 rhIm = calcVertImage(im2plot,im_ecc,im_pol,x_dist,y_dist,rhecc,rhpol,rhsig,rharea,area_val,binary);
 
 %% convert to label
-lhvert  = find(lharea == area_val) - 1;
-lhlabel = [lhcortex(ismember(lhcortex(:,1),lhvert),1:4),lhIm(lhvert+1)];
+lhvert  = ismember(lhcortex(:,1),find(lharea == area_val) - 1);
+lhlabel = [lhcortex(lhvert,1:4),lhIm(lhvert+1)];
 
-rhvert  = find(rharea == area_val) - 1;
-rhlabel = [rhcortex(ismember(rhcortex(:,1),rhvert),1:4),rhIm(rhvert+1)];
+rhvert  = ismember(rhcortex(:,1),find(rharea == area_val) - 1);
+rhlabel = [rhcortex(rhvert,1:4),rhIm(rhvert+1)];
 
 %% If binarizing, remove vertices with 0 in column 5
 if binary
@@ -213,6 +213,11 @@ if ~exist(full_outdir,'dir')
     mkdir(full_outdir)
 end
 
-write_label(lhlabel(:,1),lhlabel(:,2:4),lhlabel(:,5),fullfile(full_outdir,['lh.' region '.' labelbase '.label']), subj)
-write_label(rhlabel(:,1),rhlabel(:,2:4),rhlabel(:,5),fullfile(full_outdir,['rh.' region '.' labelbase '.label']), subj)
+if ~isempty(lhlabel)
+    write_label(lhlabel(:,1),lhlabel(:,2:4),lhlabel(:,5),fullfile(full_outdir,['lh.' region '.' labelbase '.label']), subj)
+end
+
+if ~isempty(rhlabel)
+    write_label(rhlabel(:,1),rhlabel(:,2:4),rhlabel(:,5),fullfile(full_outdir,['rh.' region '.' labelbase '.label']), subj)
+end
 
