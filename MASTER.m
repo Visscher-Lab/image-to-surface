@@ -1,14 +1,14 @@
 % all inputs
-fov_path = '/data/user/mdefende/image-to-surface/images/cones_fov_lores.bmp';
-im2plot_path = '/data/user/mdefende/image-to-surface/images/cones5deg.bmp';
+fov_path = '/data/user/mdefende/image-to-surface/images/MDP005_OS_Large_fovea.bmp';
+im2plot_path = '/data/user/mdefende/image-to-surface/images/MDP005_OS_Large_PRL.bmp';
 subdir = '/data/project/vislab/a/MDP/FreeSurfer_Subjects/';
-subj = 'MDP050';
-region = 'V1';
-labelbase = 'cones_5deg_overlap_binary';
+subj = 'MDP005';
+region = 'V3';
+labelbase = 'OS_PRL';
 outdir = 'MKD_labels';
-max_ecc = 60;
-dpp = 30/500;
-binary = true;
+max_ecc = 70;
+dpp = 0.0356;
+binary = false;
 
 % create parallel pool if one does not exist and number of cores > 1
 p = gcp('nocreate');

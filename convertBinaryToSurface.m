@@ -190,11 +190,14 @@ lhIm = calcVertImage(im2plot,im_ecc,im_pol,x_dist,y_dist,lhecc,lhpol,lhsig,lhare
 rhIm = calcVertImage(im2plot,im_ecc,im_pol,x_dist,y_dist,rhecc,rhpol,rhsig,rharea,area_val,binary);
 
 %% convert to label
-lhvert  = ismember(lhcortex(:,1),find(lharea == area_val) - 1);
-lhlabel = [lhcortex(lhvert,1:4),lhIm(lhvert+1)];
+lxyz = lhcortex(ismember(lhcortex(:,1),find(lharea == area_val)-1),1:4);
+lval = lhIm(lharea == area_val);
+lhlabel = [lxyz,lval];
 
-rhvert  = ismember(rhcortex(:,1),find(rharea == area_val) - 1);
-rhlabel = [rhcortex(rhvert,1:4),rhIm(rhvert+1)];
+rxyz = rhcortex(ismember(rhcortex(:,1),find(rharea == area_val)-1),1:4);
+rval = rhIm(rharea == area_val);
+rhlabel = [rxyz,rval];
+
 
 %% If binarizing, remove vertices with 0 in column 5
 if binary
