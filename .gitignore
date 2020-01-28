@@ -1,2 +1,5 @@
 # ignore any tempory MATLAB files that are opened during file editing
 *~
+
+# ignore any subject-relevent data
+MDP*
