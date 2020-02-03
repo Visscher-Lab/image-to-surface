@@ -191,11 +191,11 @@ rhIm = calcVertImage(im2plot,im_ecc,im_pol,x_dist,y_dist,rhecc,rhpol,rhsig,rhare
 
 %% convert to label
 lxyz = lhcortex(ismember(lhcortex(:,1),find(lharea == area_val)-1),1:4);
-lval = lhIm(lharea == area_val);
+lval = lhIm(lxyz(:,1) + 1);
 lhlabel = [lxyz,lval];
 
 rxyz = rhcortex(ismember(rhcortex(:,1),find(rharea == area_val)-1),1:4);
-rval = rhIm(rharea == area_val);
+rval = rhIm(rxyz(:,1) + 1);
 rhlabel = [rxyz,rval];
 
 
