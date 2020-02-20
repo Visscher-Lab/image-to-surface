@@ -1,4 +1,4 @@
-function convertBinaryToSurface(fov_path,im2plot_path,subdir,subj,region,labelbase,outdir,max_ecc,dpp,binary)
+function convertBinaryToSurface(fov_path,im2plot_path,subdir,subj,region,labelbase,outdir,max_ecc,dpp,binary,force)
 %{
 This function takes in images of foveal location and some shape with
 position relative to the fovea and converts them to surface space on the
@@ -66,6 +66,12 @@ Inputs:
         the image to plot (scotoma, stimulus, etc.). If false, the
         algorithm will calculate the % association metric described above.
         Leave [] to use defaults value of false.
+    force <logical>: when true, if there are no vertices left after
+        binarizing the label, the function will find the vertex closest to
+        the objects in the image, and return it. THIS IS ONLY MEANT TO BE
+        USED IN CIRCUMSTANCES WHERE THE OBJECTS ARE TOO SMALL FOR A LABEL
+        TO BE RELIABLY MADE. READ THE TOP OF THE forceVert FUNCTION FOR
+        MORE INFORMATION. default value is false
 
 Written by: Matt Defenderfer
 Date: 11/19/19
@@ -83,6 +89,10 @@ end
 
 if isempty(binary)
     binary = false;
+end
+
+if isempty(force)
+    force = false;
 end
 
 % Set the SUBJECTS_DIR env variable
@@ -106,7 +116,7 @@ im2plot = im2bw(imread(im2plot_path));
 fov_im = ~fov_im;
 im2plot = ~im2plot;
 
-% Calculate size of matrix necessary to have ~50 deg radial eccentricity
+% Calculate size of matrix necessary to have max_deg radial eccentricity
 % using dpp calculation
 max_deg_size = ceil(max_ecc/dpp*2);
 
@@ -203,6 +213,18 @@ rhlabel = [rxyz,rval];
 if binary
     lhlabel(lhlabel(:,5) == 0,:) = [];
     rhlabel(rhlabel(:,5) == 0,:) = [];
+end
+
+% if, after binarizing, there are no vertices left in the label, can grab
+% the single vertex closest to the object in the image 
+if isempty(lhlabel) && binary && force
+    lhvert = forceVert(im2plot,im_ecc,im_pol,lhecc,lhpol,lharea,area_val);
+    lhlabel = lhcortex(lhcortex(:,1) == lhvert,:);
+end
+
+if isempty(rhlabel) && binary && force
+    rhvert = forceVert(im2plot,im_ecc,im_pol,rhecc,rhpol,rharea,area_val);
+    rhlabel = rhcortex(rhcortex(:,1) == rhvert,:);
 end
 
 %% Save to file
