@@ -1,4 +1,4 @@
-function convertBinaryToSurface(fov_path,im2plot_path,subdir,subj,region,labelbase,outdir,max_ecc,dpp,binary,force)
+function convertBinaryToSurface(fov_path,im2plot_path,subdir,subj,region,labelbase,outdir,max_ecc,dpp,imflip,binary,force)
 %{
 This function takes in images of foveal location and some shape with
 position relative to the fovea and converts them to surface space on the
@@ -61,6 +61,11 @@ Inputs:
         absolutely must be set, otherwise the retinotopic estimates will be
         shrunk or extended compared to expected. Leave [] to use default
         0.0356. 
+    imflip <logical>: if the input image comes directly from a retinal image,
+        superior and inferior visual field should be flipped if it has not
+        been done previously. setting this to 1 will cause the input image
+        to flip across the horizontal meridian with respect to the fovea..
+        Default value is false
     binary <logical>: if true, the algorithm will create a label with
         only vertices whose centers are within the extent of the object in
         the image to plot (scotoma, stimulus, etc.). If false, the
@@ -85,6 +90,10 @@ end
 
 if isempty(max_ecc)
     max_ecc = 60;
+end
+
+if isempty(imflip)
+    imflip = false;
 end
 
 if isempty(binary)
@@ -165,6 +174,11 @@ shift_vert = im_center(2)-round(fov_props.Centroid(2));
 shift_hor = im_center(1)-round(fov_props.Centroid(1));
 fov_im = circshift(fov_im, [shift_vert, shift_hor]);
 im2plot = circshift(im2plot, [shift_vert, shift_hor]);
+
+% if image needs to be flipped based on imflip variable, do so
+if imflip
+    im2plot = flipud(im2plot);
+end
 
 % create x and y distance from center matrices, convert to degrees by
 % multiplying by dpp
