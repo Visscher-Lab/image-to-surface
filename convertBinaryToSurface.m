@@ -1,4 +1,4 @@
-function convertBinaryToSurface(fov_path,im2plot_path,subdir,subj,region,labelbase,outdir,max_ecc,dpp,imflip,binary,force)
+function convertBinaryToSurface(fov_path,im2plot_path,subdir,subj,region,labelbase,outdir,max_ecc,dpp,inRetinalSpace,binary,force)
 %{
 This function takes in images of foveal location and some shape with
 position relative to the fovea and converts them to surface space on the
@@ -61,10 +61,11 @@ Inputs:
         absolutely must be set, otherwise the retinotopic estimates will be
         shrunk or extended compared to expected. Leave [] to use default
         0.0356. 
-    imflip <logical>: if the input image comes directly from a retinal image,
-        superior and inferior visual field should be flipped if it has not
-        been done previously. setting this to 1 will cause the input image
-        to flip across the horizontal meridian with respect to the fovea..
+    inRetinalSpace <logical>: if the input image comes directly from a 
+        retinal image, superior and inferior visual field will be flipped
+        across the fovea. This will convert them to visual space, and all
+        processing will proceed normally. If images are already in visual
+        space, set this value to false, and images will not be flipped.
         Default value is false
     binary <logical>: if true, the algorithm will create a label with
         only vertices whose centers are within the extent of the object in
@@ -92,8 +93,8 @@ if isempty(max_ecc)
     max_ecc = 60;
 end
 
-if isempty(imflip)
-    imflip = false;
+if isempty(inRetinalSpace)
+    inRetinalSpace = false;
 end
 
 if isempty(binary)
@@ -175,8 +176,8 @@ shift_hor = im_center(1)-round(fov_props.Centroid(1));
 fov_im = circshift(fov_im, [shift_vert, shift_hor]);
 im2plot = circshift(im2plot, [shift_vert, shift_hor]);
 
-% if image needs to be flipped based on imflip variable, do so
-if imflip
+% if image needs to be flipped based on inRetinalSpace variable, do so
+if inRetinalSpace
     im2plot = flipud(im2plot);
 end
 
